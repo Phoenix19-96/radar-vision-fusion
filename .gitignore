@@ -4,6 +4,7 @@
 !/docs/
 !/output/
 !/.gitignore
+!/CLAUDE.md
 
 # Python cache
 __pycache__/
