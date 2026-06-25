@@ -1,0 +1,15 @@
+# Ignore everything except code/, docs/, output/, .gitignore
+/*
+!/code/
+!/docs/
+!/output/
+!/.gitignore
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Non-code artifacts in code/
+code/*.avi
+code/test.py
