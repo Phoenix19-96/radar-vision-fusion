@@ -1,6 +1,6 @@
-# Ignore everything except code/, docs/, output/, .gitignore
+# Ignore everything except radar_fusion/, docs/, output/, .gitignore
 /*
-!/code/
+!/radar_fusion/
 !/docs/
 !/output/
 !/.gitignore
@@ -11,6 +11,6 @@ __pycache__/
 *.pyc
 *.pyo
 
-# Non-code artifacts in code/
-code/*.avi
-code/test.py
+# Non-code artifacts in radar_fusion/
+radar_fusion/*.avi
+radar_fusion/test.py

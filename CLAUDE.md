@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a workspace built around the **nuScenes devkit** (v1.2.0) — the official development kit for the nuScenes and nuImages autonomous driving datasets by Motional. The devkit is vendored from [nutonomy/nuscenes-devkit](https://github.com/nutonomy/nuscenes-devkit) and lives under `nuscenes-devkit/`. User-owned experiment/script code lives in `code/`.
+This is a workspace built around the **nuScenes devkit** (v1.2.0) — the official development kit for the nuScenes and nuImages autonomous driving datasets by Motional. The devkit is vendored from [nutonomy/nuscenes-devkit](https://github.com/nutonomy/nuscenes-devkit) and lives under `nuscenes-devkit/`. User-owned experiment/script code lives in `radar_fusion/`.
 
 **Python version:** 3.8. Use `python` (not `python3`).
 
@@ -13,13 +13,13 @@ This is a workspace built around the **nuScenes devkit** (v1.2.0) — the offici
 ### Run the fusion perception pipeline
 ```bash
 cd D:/wzr/PyWorkspace/Fusion
-PYTHONPATH="nuscenes-devkit/python-sdk;code" python code/main.py
+PYTHONPATH="nuscenes-devkit/python-sdk;radar_fusion" python radar_fusion/main.py
 ```
 Output video saved to `output/`.
 
 ### Run inline tests (no pytest)
 ```bash
-PYTHONPATH="nuscenes-devkit/python-sdk;code" python -c "
+PYTHONPATH="nuscenes-devkit/python-sdk;radar_fusion" python -c "
 <test code>
 "
 ```
@@ -68,7 +68,7 @@ Each is a canonical walkthrough (nuscenes, nuimages, can_bus, map_expansion, pre
 
 Dataset archives are stored at the project root level. The devkit expects data under `data/sets/nuscenes/<version>/` (e.g., `v1.0-mini/`). The `.tgz` archives at `data/` level are source packages to be extracted.
 
-### `code/` — Radar-Camera Fusion Perception System
+### `radar_fusion/` — Radar-Camera Fusion Perception System
 
 Contains the **radar-camera fusion perception system** (v0.1) — decision-level late fusion with classical algorithms:
 
@@ -93,7 +93,7 @@ Contains the **radar-camera fusion perception system** (v0.1) — decision-level
 
 ## Environment Notes
 
-- **PYTHONPATH** must include both `nuscenes-devkit/python-sdk` and `code` (Windows semicolon separator: `;`)
+- **PYTHONPATH** must include both `nuscenes-devkit/python-sdk` and `radar_fusion` (Windows semicolon separator: `;`)
 - **No pytest** — tests run as inline `python -c` scripts
-- **Git repo** only tracks `code/`, `docs/`, `output/` (devkit, data, PDFs, .pt files excluded via .gitignore)
+- **Git repo** only tracks `radar_fusion/`, `docs/`, `output/` (devkit, data, PDFs, .pt files excluded via .gitignore)
 - **Remote:** `git@github.com:Phoenix19-96/radar-vision-fusion.git`
