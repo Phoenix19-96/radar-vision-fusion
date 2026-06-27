@@ -4,9 +4,11 @@ import os
 
 CONFIG = {
     # --- Radar Detection ---
-    "radar_eps": 2.0,              # DBSCAN eps in meters (x-y plane)
-    "radar_min_samples": 3,        # DBSCAN min points per cluster
-    "radar_min_rcs": -10.0,        # Min RCS (dB) to filter noise points
+    "radar_debug_plot": True,     # Enable debug plot (radar + camera side-by-side)
+
+    # --- Evaluation ---
+    "eval_enabled": True,          # Enable per-frame evaluation metrics
+    "eval_dist_threshold": 2.0,   # Max BEV center distance for matching (m)
 
     # --- Camera Detection ---
     "camera_confidence": 0.3,      # YOLO confidence threshold
@@ -29,5 +31,5 @@ CONFIG = {
     # --- Data ---
     "dataroot": "D:/wzr/PyWorkspace/Fusion/data/sets/nuscenes",
     "version": "v1.0-mini",
-    "scene_idx": 0,
+    "scene_idx": 1,
 }

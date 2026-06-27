@@ -82,27 +82,39 @@ x, y, z, dyn_prop, id, rcs, vx, vy, vx_comp, vy_comp, is_quality_valid, ambig_st
 
 #### Processing
 
-**Step 1: Filtering**
+**Step 1: Filtering** — exactly three conditions:
 ```python
 mask = (
     (invalid_state == 0) &          # valid points only
-    (ambig_state == 3) &            # unambiguous
-    (dyn_prop >= 0) & (dyn_prop <= 6)  # all dynamic states (moving + stationary + stopped)
+    (ambig_state == 3) &            # unambiguous Doppler solution
+    (pdh0 <= 2)                     # false-alarm probability ≤ 50%
 )
 ```
 
-**Step 2: DBSCAN Clustering**
-- Operate on (x, y) only (z-axis has poor accuracy on radar)
-- `eps = 1.5~2.5` meters (tunable), `min_samples = 3`
-- Each cluster = one candidate object
+| Filter | Field | Condition | Purpose |
+|--------|-------|-----------|---------|
+| invalid_state | idx 14 | `== 0` | Exclude low-RCS artifacts, near-field artifacts, mirror ghosts, FOV outliers, harmonics |
+| ambig_state | idx 11 | `== 3` | Exclude points where Doppler ambiguity is not reliably resolved |
+| pdh0 | idx 15 | `<= 2` | Exclude likely multipath reflections / ghost targets (≤50% false-alarm probability) |
 
-**Step 3: Cluster Feature Extraction**
-For each cluster:
-- `centroid`: np.mean(x), np.mean(y), np.mean(z)
-- `velocity`: np.mean(vx_comp), np.mean(vy_comp) — compensated velocity preferred
-- `size`: np.std(x), np.std(y)
-- `rcs_mean`: np.mean(rcs)
-- `n_points`: len(cluster)
+The following fields are explicitly **not** used for filtering:
+- `dyn_prop`: useful for downstream classification (moving vs stationary), not for validity filtering
+- `rcs`: signal strength varies too widely across object types; not a reliable validity indicator
+- `is_quality_valid`: redundant with invalid_state + pdh0
+
+**Step 2: Point-wise Detection**
+- **No clustering is applied.**  The Continental ARS 408 radar firmware already outputs
+  pre-clustered targets — each "point" in the nuScenes PCD file is actually a radar-internal
+  cluster.  Running a second DBSCAN on already-clustered data adds little value and risks
+  incorrectly merging distinct objects.
+- Each filtered point becomes one detection.
+- Detection columns: `[x, y, z, vx_comp, vy_comp, rcs, 0, 1]` — the last two columns
+  (size_xy=0, n_points=1) are placeholders since single-point clusters have no spatial extent.
+
+#### Design Decisions
+- No clustering on the application side — radar hardware already clusters targets
+- Filtering limited to three validity signals: invalid_state, ambig_state, pdh0
+- dyn_prop and rcs excluded from filtering — they are classification signals, not validity indicators
 
 #### Output
 `RadarDetections`: `(K, 8)` — `[x, y, z, vx, vy, rcs_mean, size_xy, n_points]`
@@ -111,7 +123,8 @@ For each cluster:
 - DBSCAN chosen because cluster count is unknown a priori
 - 2D clustering avoids z-noise contamination
 - `vx_comp/vy_comp` used to avoid ego-motion compensation step
-- All dyn_prop states retained (user requirement: detect static obstacles too)
+- Filtering limited to three validity signals: invalid_state, ambig_state, pdh0
+- dyn_prop and rcs excluded from filtering — they are classification signals, not validity indicators
 
 ### 3.2 Module 2: Camera Object Detection
 
@@ -337,9 +350,7 @@ code/
 # config.py
 CONFIG = {
     # Radar
-    "radar_eps": 2.0,           # DBSCAN eps (meters)
-    "radar_min_samples": 3,     # DBSCAN min points per cluster
-    "radar_min_rcs": -10.0,     # Min RCS (dB) — filter noise
+    "radar_debug_plot": False,   # Enable debug plot (radar + camera side-by-side)
 
     # Camera
     "camera_confidence": 0.3,   # YOLO confidence threshold
