@@ -119,7 +119,8 @@ def main():
         # ============================================================
         # Step 4: 视觉算法运行 (Camera Detection — YOLOv8n)
         # ============================================================
-        cam_dets = camera_det.detect(data["image"])
+        cam_dets = camera_det.detect(data["image"],
+                                     debug=CONFIG.get("camera_debug_plot", False))
 
         # ============================================================
         # Step 5: 决策级融合算法 (Decision-level Fusion)

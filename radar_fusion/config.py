@@ -4,11 +4,6 @@ import os
 
 CONFIG = {
     # --- Radar Detection ---
-    "radar_debug_plot": True,     # Enable debug plot (radar + camera side-by-side)
-
-    # --- Evaluation ---
-    "eval_enabled": True,          # Enable per-frame evaluation metrics
-    "eval_dist_threshold": 2.0,   # Max BEV center distance for matching (m)
 
     # --- Camera Detection ---
     "camera_confidence": 0.3,      # YOLO confidence threshold
@@ -27,6 +22,14 @@ CONFIG = {
     "track_process_noise": 0.5,    # Process noise std for ax/ay (m/s^2)
     "track_meas_noise_pos": 0.3,   # Position measurement noise std (m)
     "track_meas_noise_vel": 0.1,   # Velocity measurement noise std (m/s)
+
+    # --- Evaluation ---
+    "eval_enabled": True,          # Enable per-frame evaluation metrics
+    "eval_dist_threshold": 2.0,   # Max BEV center distance for matching (m)
+
+    # --- Debug ---
+    "radar_debug_plot": False,     # Enable debug plot (radar + camera side-by-side)
+    "camera_debug_plot": True,     # Enable debug plot (camera image + YOLO detection boxes)
 
     # --- Data ---
     "dataroot": "D:/wzr/PyWorkspace/Fusion/data/sets/nuscenes",
